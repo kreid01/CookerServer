@@ -3,15 +3,31 @@ generator client {
 }
 
 datasource db {
-  provider = "mysql"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id        Int    @id @default(autoincrement())
-  firstName String
-  lastName  String
-  email     String
-  password  String
-  tokenVersion Int  @default(0)
+model user {
+  id           Int      @id @default(autoincrement())
+  firstName    String
+  lastName     String
+  email        String
+  password     String
+  tokenVersion Int      @default(0)
+  recipe       recipe[]
+}
+
+model recipe {
+  id           Int     @id @default(autoincrement())
+  title        String
+  ingredients  String
+  steps        String
+  prepTime     Int
+  cookingTime  Int
+  servings     Int
+  imageUrl     String  @db.VarChar(10000)
+  calories     Int
+  isVegetarian Boolean
+  creatorId    Int?
+  creator      user?   @relation(fields: [creatorId], references: [id])
 }

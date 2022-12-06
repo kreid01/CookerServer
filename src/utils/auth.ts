@@ -1,13 +1,6 @@
 import { Response } from "express";
 import { sign, verify } from "jsonwebtoken";
-import { User } from '@prisma/client';
-
-export const sendRefreshToken = (res: Response, token: string) => {
-  res.cookie("reksat", token, {
-    path: "/refresh_token",
-    httpOnly: true,
-  });
-};
+import { user } from "@prisma/client";
 
 export interface MyContext {
   req: Request;
@@ -15,7 +8,7 @@ export interface MyContext {
   payload?: { userId: string };
 }
 
-export const isAuth = ({ context } : any, next: any) => {
+export const isAuth = ({ context }: any, next: any) => {
   const authorization = context.req.headers["authorization"];
 
   if (!authorization) {
@@ -34,13 +27,13 @@ export const isAuth = ({ context } : any, next: any) => {
   return next();
 };
 
-export const createAccessToken = (user: User) => {
+export const createAccessToken = (user: user) => {
   return sign({ userId: user.id }, process.env.ACCESS_TOKEN_SECRET!, {
     expiresIn: "15m",
   });
 };
 
-export const createRefreshToken = (user: User) => {
+export const createRefreshToken = (user: user) => {
   return sign(
     { userId: user.id, tokenVersion: user.tokenVersion },
     process.env.REFRESH_TOKEN_SECRET!,

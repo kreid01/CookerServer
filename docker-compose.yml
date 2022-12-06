@@ -1,0 +1,70 @@
+version: "3.7"
+services:
+  postgres:
+    image: postgres:latest
+    container_name: postgres
+    hostname: postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: cooker
+    volumes:
+      - ./pgdata:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - webnet
+    restart: always
+
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin
+    depends_on:
+      - postgres
+    ports:
+      - "5555:80"
+    networks:
+      - webnet
+    environment:
+      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
+      PGADMIN_DEFAULT_PASSWORD: admin
+    volumes:
+      - ./pgadmin-data:/var/lib/pgadmin
+    restart: unless-stopped
+
+  web:
+    image: cooker
+    build:
+      context: .
+    environment:
+      - ACCESS_TOKEN_SECRET=access
+      - REFRESH_TOKEN_SECRET=secret
+    networks:
+      - webnet
+    depends_on:
+      - pgadmin
+    command: ["./wait-for-it.sh", "db:5432", "--", "node", "server.js"]
+
+  nginx:
+    image: nginx
+    volumes:
+      - ./mysite.templates:/etc/nginx/conf.d/mysite.templates
+    networks:
+      - webnet
+    depends_on:
+      - web
+    environment:
+      - ACCESS_TOKEN_SECRET=access
+      - REFRESH_TOKEN_SECRET=secret
+    ports:
+      - "4000:80"
+    command: /bin/bash -c "envsubst < /etc/nginx/conf.d/mysite.templates > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+    healthcheck:
+      test: curl --fail http://localhost || exit 1
+      interval: 60s
+      retries: 5
+      start_period: 20s
+      timeout: 10s
+
+networks:
+  webnet:

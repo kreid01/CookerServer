@@ -7,7 +7,7 @@ POST http://localhost:4000/users/register
 Content-Type: application/json
 
 {
-    "firstName": "Jim",
+    "firstName": "Kieran",
     "lastName": "Reid",
     "email": "kieranreid2014@icloud.com",
     "password": "password"
@@ -15,11 +15,11 @@ Content-Type: application/json
 
 ###
 
-DELETE http://localhost:4000/users/7
+GET http://localhost:4000/recipes?search=
 
 ###
 
-POST http://localhost:4000/users/login
+POST http://localhost:4001/users/login
 Content-Type: application/json
 
 {
@@ -30,3 +30,26 @@ Content-Type: application/json
 ###
 GET http://localhost:4000/users/info
 authorization: bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTY2OTgxOTA4MSwiZXhwIjoxNjY5ODE5OTgxfQ.RnWV8rnIGspJcv8ReC0RTSdJHczkHlIG46XhP8iHf5w
+
+###
+
+PUT http://localhost:4000/recipes
+Content-Type:  application/json
+
+{
+    "title": "Chicken Alfredo",
+    "ingredients": "bacon",
+    "steps": "Fry the bacon",
+    "prepTime": 1,
+    "calories": 300,
+    "cookingTime": 10,
+    "servings": 1,
+    "isVegetarian": false,
+    "creatorId": 1, 
+    "imageUrl": "https://media.pitchfork.com/photos/5ed56eb59bcc962f72cc0b57/1:1/w_600/Alfredo_Freddie%20Gibbs%20and%20The%20Alchemist.jpg"
+}
+
+###
+
+DELETE  http://localhost:4000/users/2
+ 
