@@ -23,6 +23,6 @@ WORKDIR ./dist
 
 RUN npx prisma generate
 
-EXPOSE 4000
+EXPOSE 80
 
 CMD node server.js
