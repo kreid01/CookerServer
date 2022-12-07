@@ -16,22 +16,6 @@ services:
       - webnet
     restart: always
 
-  pgadmin:
-    image: dpage/pgadmin4
-    container_name: pgadmin
-    depends_on:
-      - postgres
-    ports:
-      - "5555:80"
-    networks:
-      - webnet
-    environment:
-      PGADMIN_DEFAULT_EMAIL: pgadmin4@pgadmin.org
-      PGADMIN_DEFAULT_PASSWORD: admin
-    volumes:
-      - ./pgadmin-data:/var/lib/pgadmin
-    restart: unless-stopped
-
   web:
     image: cooker
     build:
