@@ -26,7 +26,7 @@ services:
     networks:
       - webnet
     depends_on:
-      - pgadmin
+      - postgres
     command: ["./wait-for-it.sh", "db:5432", "--", "node", "server.js"]
 
   nginx:
