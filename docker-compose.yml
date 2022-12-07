@@ -27,7 +27,7 @@ services:
       - webnet
     depends_on:
       - postgres
-    command: ["./wait-for-it.sh", "postgres:5432", "--", "node", "server.js"]
+    command: ["./wait-for-it.sh", "db:5432", "--", "node", "server.js"]
 
   nginx:
     image: nginx
