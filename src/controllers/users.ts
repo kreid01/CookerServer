@@ -80,11 +80,10 @@ router.get("/auth", async (req: Request, res: Response) => {
 
 router.put("/:id", async (req: Request, res: Response) => {
   const { id } = req.params;
-  const { oldPassword, newPassword } = req.body;
-  const password = newPassword;
+  const { likedRecipes } = req.body;
   const user = await prisma.user.update({
     where: { id: Number(id) },
-    data: { password: password },
+    data: { likedRecipes: likedRecipes },
   });
   res.status(200).json(user);
 });
