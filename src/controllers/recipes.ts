@@ -61,30 +61,20 @@ router.delete("/:id", async (req: Request, res: Response) => {
 
 router.get("/", async (req: Request, res: Response) => {
   const search = req.query.search;
-  const pageNumber = parseInt(req.query.pageNumber as string) || 0;
+  const page = parseInt(req.query.pageNumber as string) || 0;
   const limit = parseInt(req.query.limit as string) || 3;
+
+  const startIndex = (page - 1) * limit;
+  const endIndex = page * limit;
+
   try {
     const recipes = await prisma.recipe.findMany();
     const filteredRecipes = recipes.filter((recipe) =>
       recipe.title.toLowerCase().includes((search as string)?.toLowerCase())
     );
-    res
-      .status(200)
-      .json(collect(filteredRecipes).skip(pageNumber).limit(limit));
+    res.status(200).json(filteredRecipes.slice(startIndex, endIndex));
   } catch (err: any) {
     res.status(404).send(err.message);
-  }
-});
-
-router.get("/", async (req: Request, res: Response) => {
-  const pageNumber = parseInt(req.query.pageNumber as string) || 0;
-  const limit = parseInt(req.query.limit as string) || 3;
-
-  try {
-    const allRecipes = await prisma.recipe.findMany();
-    res.status(200).json(collect(allRecipes).skip(pageNumber).limit(limit));
-  } catch (err: any) {
-    res.status(400).send(err.mesage);
   }
 });
 
