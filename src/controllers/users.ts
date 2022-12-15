@@ -1,4 +1,4 @@
-import { createAccessToken, createRefreshToken } from "./../utils/auth";
+import { createAccessToken } from "./../utils/auth";
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import express from "express";
@@ -48,7 +48,12 @@ router.post("/register", async (req: any, res: any) => {
 
   try {
     await prisma.user.create({
-      data: { firstName, lastName, email, password: hashedPassword },
+      data: {
+        firstName,
+        lastName,
+        email,
+        password: hashedPassword,
+      },
     });
   } catch (err) {
     console.log(err);
@@ -76,16 +81,6 @@ router.get("/auth", async (req: Request, res: Response) => {
     console.log(err);
     res.status(400);
   }
-});
-
-router.put("/:id", async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const { likedRecipes } = req.body;
-  const user = await prisma.user.update({
-    where: { id: Number(id) },
-    data: { likedRecipes: likedRecipes },
-  });
-  res.status(200).json(user);
 });
 
 router.delete(`/:id`, async (req, res) => {

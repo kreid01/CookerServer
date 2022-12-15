@@ -1,6 +1,8 @@
 import { PrismaClient } from "@prisma/client";
 import { Request, Response } from "express";
 import express from "express";
+//@ts-ignore
+import collect from "collect-js";
 
 const prisma = new PrismaClient();
 const router = express.Router();
@@ -71,9 +73,12 @@ router.get("/", async (req: Request, res: Response) => {
 });
 
 router.get("/", async (req: Request, res: Response) => {
+  const pageNumber = parseInt(req.query.pageNumber as string) || 0;
+  const limit = parseInt(req.query.limit as string) || 3;
+
   try {
     const allRecipes = await prisma.recipe.findMany();
-    res.status(200).json(allRecipes);
+    res.status(200).json(collect(allRecipes).skip(pageNumber).limit(limit));
   } catch (err: any) {
     res.status(400).send(err.mesage);
   }
